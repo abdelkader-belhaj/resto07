@@ -1,0 +1,40 @@
+# config/services.yaml
+parameters:
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically inject dependencies in your services.
+        autoconfigure: true # Automatically configure your services.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # Firebase Factory Configuration
+    # Service pour Realtime Database
+    Kreait\Firebase\Contract\Database:
+        factory: ['@Kreait\Firebase\Factory', 'createDatabase']
+
+    # Service Firebase personnalisé
+    App\Service\FirebaseService:
+        arguments:
+            $credentialsPath: '%kernel.project_dir%/config/firebase/symfony07-firebase-adminsdk-fbsvc-7148aaa659.json'
+            $databaseUrl: 'https://symfony07-default-rtdb.firebaseio.com'
+
+    Kreait\Firebase\Factory:
+        factory: ['Kreait\Firebase\Factory', 'withServiceAccount']
+        arguments:
+            - '%kernel.project_dir%/path/to/firebase_credentials.json'
+
+    # Configuration du service Cloudinary
+    App\Service\CloudinaryUploader:
+        arguments:
+            $cloudName: '%env(CLOUDINARY_NAME)%'
+            $apiKey: '%env(CLOUDINARY_API_KEY)%'
+            $apiSecret: '%env(CLOUDINARY_API_SECRET)%'

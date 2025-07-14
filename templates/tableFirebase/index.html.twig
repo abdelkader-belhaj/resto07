@@ -1,0 +1,45 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Liste des Réservations{% endblock %}
+
+{% block body %}
+<h1>Liste des Réservations</h1>
+<a href="{{ path('firebase_table_new') }}" class="btn btn-primary mb-3">Nouvelle réservation</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Date</th>
+            <th>Heure</th>
+            <th>Nombre de personnes</th>
+            <th>Message</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for key, table in tables %}
+        <tr>
+            <td>{{ table.name }}</td>
+            <td>{{ table.email }}</td>
+            <td>{{ table.tel }}</td>
+            <td>{{ table.date }}</td>
+            <td>{{ table.time }}</td>
+            <td>{{ table.numberPeople }}</td>
+            <td>{{ table.message }}</td>
+            <td>
+                <a href="{{ path('firebase_table_show', {'key': key}) }}" class="btn btn-sm btn-info">Voir</a>
+                <a href="{{ path('firebase_table_edit', {'key': key}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                <form method="post" action="{{ path('firebase_table_delete', {'key': key}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ key) }}">
+                    <button class="btn btn-sm btn-danger">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+    {% else %}
+        <tr><td colspan="8">Aucune réservation trouvée.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

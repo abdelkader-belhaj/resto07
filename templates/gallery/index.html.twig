@@ -1,0 +1,19 @@
+{% extends 'baseAdmin.html.twig' %}
+{% block title %}Galerie{% endblock %}
+{% block body %}
+<h1>Galerie d'images</h1>
+<a href="{{ path('gallery_new') }}">Ajouter une image</a>
+<hr>
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+  {% for key, g in galleries %}
+    <div style="border:1px solid #ccc; padding:10px;">
+        <img src="{{ g.image }}" width="200"><br>
+        <a href="{{ path('gallery_show', {key: key}) }}">Voir</a> |
+        <a href="{{ path('gallery_edit', {key: key}) }}">Modifier</a>
+        <form action="{{ path('gallery_delete', {key: key}) }}" method="post" style="display:inline">
+            <button type="submit">Supprimer</button>
+        </form>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

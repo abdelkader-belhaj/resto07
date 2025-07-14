@@ -1,0 +1,383 @@
+{% extends 'base.html.twig' %}
+
+{% block bodyy %}
+<!-- Menu Section -->
+<section id="menu" class="menu section">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Menu</h2>
+    <div><span>Check Our Tasty</span> <span class="description-title">Menu</span></div>
+  </div>
+
+  <div class="container isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+
+    <!-- Filtres dynamiques -->
+    <div class="row" data-aos="fade-up" data-aos-delay="100">
+      <div class="col-lg-12 d-flex justify-content-center">
+        <ul class="menu-filters isotope-filters">
+          <li data-filter="*" class="filter-active">Tous</li>
+          {% for type in types %}
+            <li data-filter=".{{ type }}">{{ type|replace({'filter-':''})|capitalize }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Affichage des menus -->
+    <div class="row isotope-container" data-aos="fade-up" data-aos-delay="200">
+      {% for menu in menus %}
+        <div class="col-lg-6 menu-item isotope-item {{ menu.type }}">
+          <img src="{{ menu.image }}" class="menu-img" alt="">
+          <div class="menu-content">
+            <a href="#">{{ menu.titre }}</a><span>$9.95</span>
+          </div>
+          <div class="menu-ingredients">
+            {{ menu.description }}
+          </div>
+        </div>
+      {% else %}
+        <p>Aucun menu trouvé.</p>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% block bodyspec %}
+<!-- Specials Section -->
+<section id="specials" class="specials section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Specials</h2>
+    <div><span>Check Our</span> <span class="description-title">Specials</span></div>
+  </div><!-- End Section Title -->
+
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="row">
+      <div class="col-lg-3">
+        <ul class="nav nav-tabs flex-column">
+          {% for key, special in specials %}
+            <li class="nav-item">
+              <a class="nav-link {% if loop.first %}active show{% endif %}" data-bs-toggle="tab" href="#specials-tab-{{ loop.index }}">
+                {{ special.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="col-lg-9 mt-4 mt-lg-0">
+        <div class="tab-content">
+          {% for key, special in specials %}
+            <div class="tab-pane {% if loop.first %}active show{% endif %}" id="specials-tab-{{ loop.index }}">
+              <div class="row">
+                <div class="col-lg-8 details order-2 order-lg-1">
+                  <h3>{{ special.title }}</h3>
+                  <p class="fst-italic">{{ special.sousTitre }}</p>
+                  <p>{{ special.description }}</p>
+                </div>
+                <div class="col-lg-4 text-center order-1 order-lg-2">
+                  <img src="{{ special.image }}" alt="" class="img-fluid">
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /Specials Section -->
+{% endblock %}
+
+
+
+
+
+
+{% block bodyparties %}
+<!-- Events Section -->
+<section id="events" class="events section">
+  <img class="slider-bg" src="{{ asset('assets/img/events-bg.jpg') }}" alt="" data-aos="fade-in">
+
+  <div class="container">
+    <div class="swiper init-swiper" data-aos="fade-up" data-aos-delay="100">
+      <script type="application/json" class="swiper-config">
+        {
+          "loop": true,
+          "speed": 600,
+          "autoplay": {
+            "delay": 5000
+          },
+          "slidesPerView": "auto",
+          "pagination": {
+            "el": ".swiper-pagination",
+            "type": "bullets",
+            "clickable": true
+          }
+        }
+      </script>
+
+      <div class="swiper-wrapper">
+        {% for party in partties %}
+          <div class="swiper-slide">
+            <div class="row gy-4 event-item">
+              <div class="col-lg-6">
+                <img src="{{ party.image }}" class="img-fluid" alt="">
+              </div>
+              <div class="col-lg-6 pt-4 pt-lg-0 content">
+                <h3>{{ party.titre }}</h3>
+                <div class="price">
+                  <p><span>${{ party.price }}</span></p>
+                </div>
+                <p class="fst-italic">
+                  {{ party.debut }}
+                </p>
+                <ul>
+                  <li><i class="bi bi-check2-circle"></i> <span>{{ party.ligne1 }}</span></li>
+                  <li><i class="bi bi-check2-circle"></i> <span>{{ party.ligne2 }}</span></li>
+                  <li><i class="bi bi-check2-circle"></i> <span>{{ party.ligne3 }}</span></li>
+                </ul>
+                <p>{{ party.final }}</p>
+              </div>
+            </div>
+          </div><!-- End Slider item -->
+        {% endfor %}
+      </div>
+
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+{% block bodyTable %}
+
+   
+<!-- Affichage des messages flash -->
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}">{{ message }}</div>
+    {% endfor %}
+{% endfor %}
+
+<!-- Book A Table Section -->
+<section id="book-a-table" class="book-a-table section">
+
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Book A Table</h2>
+    <div><span>Book a</span> <span class="description-title">Table</span></div>
+  </div>
+
+  <div class="container">
+    <div class="row g-0" data-aos="fade-up" data-aos-delay="100">
+      <div class="col-lg-4 reservation-img" style="background-image: url(assets/img/reservation.jpg);"></div>
+
+      <div class="col-lg-8 d-flex align-items-center reservation-form-bg" data-aos="fade-up" data-aos-delay="200">
+        <form action="{{ path('front_index') }}" method="post" role="form">
+          <div class="row gy-4">
+            <div class="col-lg-4 col-md-6">
+              <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <input type="text" name="phone" class="form-control" placeholder="Your Phone" required>
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <input type="date" name="date" class="form-control" required>
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <input type="time" name="time" class="form-control" required>
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <input type="number" name="people" class="form-control" placeholder="# of people" required>
+            </div>
+          </div>
+
+          <div class="form-group mt-3">
+            <textarea class="form-control" name="message" rows="5" placeholder="Message"></textarea>
+          </div>
+
+          <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary">Book a Table</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+    {% endblock %}
+
+
+
+
+{% block bodyGallery %}
+
+<!-- Gallery Section -->
+<section id="gallery" class="gallery section">
+
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Gallery</h2>
+    <div><span>Some photos from</span> <span class="description-title">Our Restaurant</span></div>
+  </div><!-- End Section Title -->
+
+  <div class="container-fluid" data-aos="fade-up" data-aos-delay="100">
+
+    <div class="row g-0">
+
+      {% for key, g in galleries %}
+        <div class="col-lg-3 col-md-4">
+          <div class="gallery-item">
+            <a href="{{ g.image }}" class="glightbox" data-gallery="images-gallery">
+              <img src="{{ g.image }}" alt="" class="img-fluid">
+            </a>
+            
+          </div>
+        </div><!-- End Gallery Item -->
+      {% endfor %}
+
+    </div>
+
+   
+
+  </div>
+
+</section><!-- /Gallery Section -->
+
+{% endblock %}
+
+
+
+{% block bodyChefs %}
+
+
+
+<!-- Chefs Section -->
+<section id="chefs" class="chefs section">
+
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Chefs</h2>
+    <div><span>Our Professional</span> <span class="description-title">Chefs</span></div>
+  </div><!-- End Section Title -->
+
+  <div class="container">
+    <div class="row gy-5">
+
+      {% for key, chef in chefs %}
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+          <div class="member">
+            <div class="pic">
+              {% if chef.image %}
+                <img src="{{ chef.image }}" class="img-fluid" alt="Photo de {{ chef.nom }}">
+              {% else %}
+                <span class="text-muted">Aucune image</span>
+              {% endif %}
+            </div>
+            <div class="member-info">
+              <h4>{{ chef.nom }}</h4>
+              <span>{{ chef.titre }}</span>
+              <div class="social">
+                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                <a href="#"><i class="bi bi-facebook"></i></a>
+                <a href="#"><i class="bi bi-instagram"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+              </div>
+              <div class="mt-2">
+             
+                <form method="post" action="{{ path('chefs_delete', {'key': key}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce chef ?');">
+              
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="col-12 text-center text-muted">
+          Aucun chef trouvé.
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+
+</section><!-- /Chefs Section -->
+
+
+
+    {% endblock %}
+
+{% block bodyContact %}
+ <div class="col-lg-8">
+    <form action="{{ path('front_index') }}" method="post" role="form" class="php-email-form">
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <input
+            type="text"
+            name="name"
+            class="form-control"
+            id="name"
+            placeholder="Your Name"
+            required>
+        </div>
+        <div class="col-md-6 form-group mt-3 mt-md-0">
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            id="email"
+            placeholder="Your Email"
+            required>
+        </div>
+      </div>
+      <div class="form-group mt-3">
+        <input
+          type="text"
+          class="form-control"
+          name="subject"
+          id="subject"
+          placeholder="Subject"
+          required>
+      </div>
+      <div class="form-group mt-3">
+        <textarea
+          class="form-control"
+          name="message"
+          placeholder="Message"
+          required></textarea>
+      </div>
+      <div class="my-3">
+        <div class="loading">Loading</div>
+        <div class="error-message"></div>
+        <div class="sent-message">Your message has been sent. Thank you!</div>
+      </div>
+      <div class="text-center"><button type="submit">Send Message</button></div>
+    </form>
+ </div><!-- End Contact Form -->
+{% endblock %}
