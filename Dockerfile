@@ -13,8 +13,15 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 COPY . .
 
-# Installer les dépendances PHP
-RUN composer install --no-dev --optimize-autoloader
+# Autoriser Symfony Flex sans plugins
+RUN composer config --no-plugins allow-plugins.symfony/flex true
+
+# Installer les dépendances PHP sans exécuter les scripts
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Nettoyer et réchauffer le cache manuellement
+RUN php bin/console cache:clear --env=prod \
+    && php bin/console cache:warmup --env=prod
 
 # Droits
 RUN chown -R www-data:www-data /var/www

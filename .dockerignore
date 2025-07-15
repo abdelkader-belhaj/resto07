@@ -1,7 +1,7 @@
 .git
-vendor/
-node_modules/
 .env.local
 .env.dev
 .env
-tests/
+node_modules
+vendor
+tests
