@@ -1,36 +1,26 @@
-# Base PHP avec Apache
-FROM php:8.2-apache
+# Étape 1 : Base PHP avec extensions
+FROM php:8.2-fpm
 
-# Installer dépendances PHP utiles pour Symfony et Firebase
+# Installer les dépendances système
 RUN apt-get update && apt-get install -y \
-    git unzip zip curl libonig-dev libxml2-dev libzip-dev \
-    && docker-php-ext-install pdo mbstring zip xml intl \
-    && a2enmod rewrite
-
-# Copier le projet dans le container
-COPY . /app
-
-# Copier le fichier credentials Firebase dans /app/config/firebase/
-COPY config/firebase/symfony07-firebase-adminsdk-fbsvc-7148aaa659.json /app/config/firebase/
-
-WORKDIR /app
+    git unzip libicu-dev libzip-dev zip \
+    && docker-php-ext-install intl pdo zip
 
 # Installer Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Installer les dépendances PHP sans dev
+# Copier le projet Symfony
+WORKDIR /var/www
+COPY . .
+
+# Installer les dépendances PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Donner les droits nécessaires à www-data (Apache)
-RUN chown -R www-data:www-data /app/var
+# Droits
+RUN chown -R www-data:www-data /var/www
 
-# Copier script d'entrée et le rendre exécutable
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Port exposé
+EXPOSE 8000
 
-# Exposer port 80
-EXPOSE 80
-
-# Utiliser le script d'entrée et lancer apache
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["apache2-foreground"]
+# Commande de démarrage
+CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
