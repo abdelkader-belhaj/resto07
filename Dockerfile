@@ -15,10 +15,14 @@ COPY . .
 RUN composer config --no-plugins allow-plugins.symfony/flex true
 
 # Installer les dépendances et exécuter les commandes manuellement
-RUN composer install --no-dev --optimize-autoloader && \
+RUN rm -rf var/cache/* && \
+    composer install --no-dev --optimize-autoloader && \
     php bin/console cache:clear --env=prod && \
     php bin/console cache:warmup --env=prod && \
     php bin/console assets:install public
+
+
+    
 
 # Étape finale (plus légère)
 FROM php:8.2-fpm
