@@ -1,5 +1,7 @@
 FROM php:8.2-fpm as build
 
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 RUN apt-get update && apt-get install -y \
     git unzip libicu-dev libzip-dev zip \
     && docker-php-ext-install intl pdo zip
@@ -9,16 +11,16 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 COPY . .
 
+# Configurer composer pour autoriser symfony/flex
 RUN composer config --no-plugins allow-plugins.symfony/flex true
 
-# Installer toutes les dépendances (runtime + prod, sans dev)
-RUN composer install --no-dev --optimize-autoloader
+# Installer les dépendances et exécuter les commandes manuellement
+RUN composer install --no-dev --optimize-autoloader && \
+    php bin/console cache:clear --env=prod && \
+    php bin/console cache:warmup --env=prod && \
+    php bin/console assets:install public
 
-# Nettoyer et réchauffer le cache
-RUN php bin/console cache:clear --env=prod \
-    && php bin/console cache:warmup --env=prod
-
-# Étape finale (production légère)
+# Étape finale (plus légère)
 FROM php:8.2-fpm
 
 RUN apt-get update && apt-get install -y \
