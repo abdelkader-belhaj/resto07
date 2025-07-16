@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitaf3a971b86a4585c7c3bf9fe517e48ae
+class ComposerStaticInit11eda49c8b966bf11bef8c7688b6de0f
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -169,7 +169,6 @@ class ComposerStaticInitaf3a971b86a4585c7c3bf9fe517e48ae
             'Doctrine\\Common\\Lexer\\' => 22,
             'Doctrine\\Common\\DataFixtures\\' => 29,
             'Doctrine\\Common\\Collections\\' => 28,
-            'Doctrine\\Common\\Cache\\' => 22,
             'Doctrine\\Common\\' => 16,
             'Doctrine\\Bundle\\MigrationsBundle\\' => 33,
             'Doctrine\\Bundle\\FixturesBundle\\' => 31,
@@ -619,10 +618,6 @@ class ComposerStaticInitaf3a971b86a4585c7c3bf9fe517e48ae
         'Doctrine\\Common\\Collections\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/collections/src',
-        ),
-        'Doctrine\\Common\\Cache\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
         ),
         'Doctrine\\Common\\' => 
         array (
@@ -1331,9 +1326,9 @@ class ComposerStaticInitaf3a971b86a4585c7c3bf9fe517e48ae
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitaf3a971b86a4585c7c3bf9fe517e48ae::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitaf3a971b86a4585c7c3bf9fe517e48ae::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitaf3a971b86a4585c7c3bf9fe517e48ae::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit11eda49c8b966bf11bef8c7688b6de0f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit11eda49c8b966bf11bef8c7688b6de0f::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit11eda49c8b966bf11bef8c7688b6de0f::$classMap;
 
         }, null, ClassLoader::class);
     }
