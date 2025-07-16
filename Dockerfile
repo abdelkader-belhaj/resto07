@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Copier le projet Symfony
-WORKDIR /var/www
+WORKDIR /app
 COPY . .
 
 # Autoriser Symfony Flex sans plugins
@@ -23,11 +23,15 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 RUN php bin/console cache:clear --env=prod \
     && php bin/console cache:warmup --env=prod
 
-# Droits
-RUN chown -R www-data:www-data /var/www
+# Droits (optionnel sur Render mais bon à avoir)
+RUN chown -R www-data:www-data /app
 
-# Port exposé
+# Copier le script d'entrée
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Exposer un port (Render choisira une valeur réelle à l'exécution)
 EXPOSE 8000
 
-# Commande de démarrage
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+# Utiliser le script d’entrée comme point d’entrée
+CMD ["/docker-entrypoint.sh"]

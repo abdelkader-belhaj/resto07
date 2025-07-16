@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Service;
 
 use Kreait\Firebase\Factory;
@@ -9,15 +10,31 @@ class FirebaseService
 {
     private Database $database;
 
-    public function __construct(string $credentialsPath, string $databaseUrl)
+    public function __construct()
     {
+        // Lire la clé JSON depuis la variable d'environnement
+        $credentialsJson = getenv('FIREBASE_CREDENTIALS');
+        if (!$credentialsJson) {
+            throw new \RuntimeException('FIREBASE_CREDENTIALS is not set.');
+        }
+
+        // L’écrire temporairement dans un fichier
+        $tempFile = sys_get_temp_dir() . '/firebase_credentials.json';
+        file_put_contents($tempFile, $credentialsJson);
+
+        // Lire l'URL de la base de données
+        $databaseUrl = getenv('FIREBASE_DATABASE_URL');
+        if (!$databaseUrl) {
+            throw new \RuntimeException('FIREBASE_DATABASE_URL is not set.');
+        }
+
+        // Créer l’usine Firebase
         $factory = (new Factory)
-            ->withServiceAccount($credentialsPath)
+            ->withServiceAccount($tempFile)
             ->withDatabaseUri($databaseUrl);
 
         $this->database = $factory->createDatabase();
     }
-
     public function getDatabase(): Database
     {
         return $this->database;
