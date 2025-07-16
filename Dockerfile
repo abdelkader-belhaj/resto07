@@ -16,10 +16,8 @@ COPY . .
 # Autoriser Symfony Flex sans plugins
 RUN composer config --no-plugins allow-plugins.symfony/flex true
 
-# Installer les dépendances PHP sans exécuter les scripts
-RUN composer install --no-dev --optimize-autoloader --no-scripts
-
-
+# Installer les dépendances PHP sans optimisation d'abord
+RUN composer install --no-scripts
 
 # Nettoyer et réchauffer le cache manuellement
 RUN php bin/console cache:clear --env=prod \
@@ -35,5 +33,5 @@ RUN chmod +x /docker-entrypoint.sh
 # Exposer un port (Render choisira une valeur réelle à l'exécution)
 EXPOSE 8000
 
-# Utiliser le script d’entrée comme point d’entrée
+# Utiliser le script d'entrée comme point d'entrée
 CMD ["/docker-entrypoint.sh"]
