@@ -17,7 +17,7 @@ COPY . .
 RUN composer config --no-plugins allow-plugins.symfony/flex true
 
 # Installer les dépendances PHP sans exécuter les scripts
-RUN composer install --no-dev --optimize-autoloader 
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 
 
