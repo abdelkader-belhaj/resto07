@@ -1,18 +1,32 @@
 <?php
 
 namespace App\Service;
-
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Database;
+use Kreait\Firebase\ServiceAccount;
 
 class FirebaseService
 {
     private Database $database;
 
-    public function __construct(string $credentialsPath, string $databaseUrl)
+    public function __construct()
     {
-        $factory = (new Factory)
-            ->withServiceAccount($credentialsPath)
+        $credentialsJson = getenv('FIREBASE_CREDENTIALS');
+        $databaseUrl = getenv('FIREBASE_DATABASE_URL');
+
+        if (!$credentialsJson || !$databaseUrl) {
+            throw new \RuntimeException('FIREBASE_CREDENTIALS or FIREBASE_DATABASE_URL is not set.');
+        }
+
+        // Convertir le JSON en tableau PHP
+        $credentialsArray = json_decode($credentialsJson, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \RuntimeException('Invalid JSON in FIREBASE_CREDENTIALS: ' . json_last_error_msg());
+        }
+
+        $factory = (new Factory())
+            ->withServiceAccount(ServiceAccount::fromValue($credentialsArray))
             ->withDatabaseUri($databaseUrl);
 
         $this->database = $factory->createDatabase();
@@ -22,7 +36,6 @@ class FirebaseService
     {
         return $this->database;
     }
-
     // --------------------------
     // 🎯 MENUS
     // --------------------------
