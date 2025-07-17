@@ -1,4 +1,6 @@
-FROM php:8.2-fpm as build
+FROM php:8.2-fpm AS build
+
+
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
@@ -15,14 +17,10 @@ COPY . .
 RUN composer config --no-plugins allow-plugins.symfony/flex true
 
 # Installer les dépendances et exécuter les commandes manuellement
-RUN rm -rf var/cache/* && \
-    composer install --no-dev --optimize-autoloader && \
+RUN composer install --no-dev --optimize-autoloader && \
     php bin/console cache:clear --env=prod && \
     php bin/console cache:warmup --env=prod && \
     php bin/console assets:install public
-
-
-    
 
 # Étape finale (plus légère)
 FROM php:8.2-fpm
@@ -30,6 +28,7 @@ FROM php:8.2-fpm
 RUN apt-get update && apt-get install -y \
     libicu-dev libzip-dev \
     && docker-php-ext-install intl pdo zip
+    
 
 WORKDIR /app
 COPY --from=build /app .

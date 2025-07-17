@@ -7979,12 +7979,6 @@
             "install-path": "../twig/twig"
         }
     ],
-    "dev": true,
-    "dev-package-names": [
-        "doctrine/data-fixtures",
-        "doctrine/doctrine-fixtures-bundle",
-        "nikic/php-parser",
-        "symfony/maker-bundle",
-        "symfony/process"
-    ]
+    "dev": false,
+    "dev-package-names": []
 }
