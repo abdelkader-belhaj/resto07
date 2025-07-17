@@ -22,10 +22,7 @@ services:
         factory: ['@Kreait\Firebase\Factory', 'createDatabase']
 
     # Service Firebase personnalisé
-    App\Service\FirebaseService:
-        arguments:
-            $credentialsPath: '%kernel.project_dir%/config/firebase/symfony07-firebase-adminsdk-fbsvc-7148aaa659.json'
-            $databaseUrl: 'https://symfony07-default-rtdb.firebaseio.com'
+    App\Service\FirebaseService: ~
 
     Kreait\Firebase\Factory:
         factory: ['Kreait\Firebase\Factory', 'withServiceAccount']
