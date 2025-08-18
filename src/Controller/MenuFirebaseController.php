@@ -1,5 +1,5 @@
 <?php
-// src/Controller/MenuFirebaseController.php
+
 namespace App\Controller;
 
 use App\Service\FirebaseService;
@@ -14,7 +14,7 @@ class MenuFirebaseController extends AbstractController
     #[Route('/menus', name: 'firebase_menu_index')]
     public function index(FirebaseService $firebase): Response
     {
-        $menus = $firebase->getMenus();
+        $menus = $firebase->getAllMenus();
         // Ensure each menu has a 'type' key to avoid Twig errors
         foreach ($menus as &$menu) {
             if (!array_key_exists('type', $menu)) {
@@ -32,22 +32,56 @@ class MenuFirebaseController extends AbstractController
     public function add(Request $request, FirebaseService $firebase, CloudinaryUploader $cloudinary): Response
     {
         if ($request->isMethod('POST')) {
+            $titre = trim($request->request->get('titre'));
+            $description = trim($request->request->get('description'));
+            $type = $request->request->get('type');
+            $price = $request->request->get('price');
             $imageFile = $request->files->get('image');
-            $imageUrl = null;
-            if ($imageFile) {
-                $imagePath = $imageFile->getPathname();
-                $imageUrl = $cloudinary->uploadImage($imagePath);
+
+            $errors = [];
+
+            if (empty($titre)) {
+                $errors[] = 'Le champ "Titre" est obligatoire.';
             }
+            if (empty($description)) {
+                $errors[] = 'Le champ "Description" est obligatoire.';
+            }
+            if (empty($type)) {
+                $errors[] = 'Le champ "Type" est obligatoire.';
+            }
+            if (empty($price) || !is_numeric($price) || floatval($price) <= 0) {
+                $errors[] = 'Le champ "Prix" est obligatoire et doit être un nombre positif.';
+            }
+            if (!$imageFile) {
+                $errors[] = 'L\'image est requise.';
+            }
+
+            if (count($errors) > 0) {
+                foreach ($errors as $error) {
+                    $this->addFlash('error', $error);
+                }
+
+                $types = ['Petit déjeuner', 'Déjeuner', 'Dîner', 'Collation', 'Brunch'];
+                return $this->render('menuFirebase/add.html.twig', [
+                    'types' => $types
+                ]);
+            }
+
+            $imageUrl = $cloudinary->uploadImage($imageFile->getPathname());
+
             $data = [
-                'titre' => $request->request->get('titre'),
-                'description' => $request->request->get('description'),
+                'titre' => $titre,
+                'description' => $description,
                 'image' => $imageUrl,
-                'type' => $request->request->get('type'), // Ajout du champ type
+                'type' => $type,
+                'price' => floatval($price),
             ];
+
             $firebase->createMenu($data);
             $this->addFlash('success', 'Menu ajouté avec succès !');
             return $this->redirectToRoute('firebase_menu_index');
         }
+
         $types = ['Petit déjeuner', 'Déjeuner', 'Dîner', 'Collation', 'Brunch'];
         return $this->render('menuFirebase/add.html.twig', [
             'types' => $types
@@ -72,11 +106,24 @@ class MenuFirebaseController extends AbstractController
                 $imageUrl = $cloudinary->uploadImage($imagePath);
             }
 
+            $price = $request->request->get('price');
+
+            if (empty($price) || !is_numeric($price) || floatval($price) <= 0) {
+                $this->addFlash('error', 'Le champ "Prix" est obligatoire et doit être un nombre positif.');
+                $types = ['Petit déjeuner', 'Déjeuner', 'Dîner', 'Collation', 'Brunch'];
+                return $this->render('menuFirebase/edit.html.twig', [
+                    'menu' => $menu,
+                    'key' => $key,
+                    'types' => $types
+                ]);
+            }
+
             $data = [
                 'titre' => $request->request->get('titre'),
                 'description' => $request->request->get('description'),
                 'image' => $imageUrl,
-                'type' => $request->request->get('type'), // Ajout du champ type
+                'type' => $request->request->get('type'),
+                'price' => floatval($price),
             ];
             
             $firebase->updateMenu($key, $data);
@@ -105,4 +152,17 @@ class MenuFirebaseController extends AbstractController
         $this->addFlash('success', 'Menu supprimé avec succès !');
         return $this->redirectToRoute('firebase_menu_index');
     }
+
+
+
+     #[Route('/menuComande', name: 'commande_menu_index')]
+    public function menuComande(FirebaseService $firebase): Response
+    {
+      
+        return $this->render('menuFirebase/menuComande.html.twig', [
+            
+        ]);
+    }
+
+    
 }

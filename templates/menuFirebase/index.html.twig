@@ -1,7 +1,6 @@
 {% extends 'baseAdmin.html.twig' %}
 {% block body %}
 
-
 {% for label, messages in app.flashes %}
     {% for message in messages %}
         <div class="alert alert-{{ label }} mb-3" role="alert">
@@ -19,7 +18,6 @@
     {% endfor %}
 {% endfor %}
 
-{# Header avec bouton d'ajout #}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Gestion des Menus</h2>
     <a href="{{ path('firebase_menu_add') }}" class="btn btn-primary">
@@ -27,7 +25,6 @@
     </a>
 </div>
 
-{# Tableau des menus ou message si vide #}
 {% if menus is not empty %}
     <div class="card">
         <div class="card-body p-0">
@@ -37,6 +34,7 @@
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Menu</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Type</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Description</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Prix</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2" style="min-width: 120px;">Actions</th>
                     </tr>
                 </thead>
@@ -76,21 +74,32 @@
                                     {% endif %}
                                 </p>
                             </td>
+                            <td>
+                                {% if menu.price is defined %}
+                                    <span class="text-sm">{{ menu.price|number_format(2, '.', ' ') }} TND</span>
+                                {% else %}
+                                    <span class="text-muted text-sm">—</span>
+                                {% endif %}
+                            </td>
                             <td class="align-middle text-center">
                                 <div class="d-flex justify-content-center gap-2">
                                     <a href="{{ path('firebase_menu_edit', {'key': key}) }}" 
-                                       class="btn btn-warning btn-sm" 
-                                       title="Modifier">
-                                        <i class="fas fa-edit"></i>
+                                       class="btn btn-warning btn-xs px-2 py-1" 
+                                       title="Modifier"
+                                       style="font-size: 0.75rem;">
+                                        <i class="fas fa-edit me-1"></i>
+                                        Modifier
                                     </a>
                                     <form method="POST" 
                                           action="{{ path('firebase_menu_delete', {'key': key}) }}" 
                                           style="display: inline;" 
                                           onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer le menu « {{ menu.titre }} » ?');">
                                         <button type="submit" 
-                                                class="btn btn-danger btn-sm" 
-                                                title="Supprimer">
-                                            <i class="fas fa-trash"></i>
+                                                class="btn btn-danger btn-xs px-2 py-1" 
+                                                title="Supprimer"
+                                                style="font-size: 0.75rem;">
+                                            <i class="fas fa-trash me-1"></i>
+                                            Supprimer
                                         </button>
                                     </form>
                                 </div>
@@ -102,7 +111,6 @@
         </div>
     </div>
 {% else %}
-    {# Message si aucun menu #}
     <div class="text-center mt-4">
         <div class="card">
             <div class="card-body py-5">
@@ -132,6 +140,5 @@
     gap: 0.5rem;
 }
 </style>
-
 
 {% endblock %}

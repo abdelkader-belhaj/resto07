@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use Doctrine\DBAL\Types\Types;
 
 use App\Repository\MenuRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,6 +25,10 @@ class Menu
 
     #[ORM\Column(length: 50)]
     private ?string $type = null;
+
+
+   #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?string $price = null;
 
     public function getId(): ?int
     {
@@ -76,5 +81,23 @@ class Menu
         $this->type = $type;
 
         return $this;
+    }
+
+
+    public function getPrice(): ?string
+    {
+        return $this->price;
+    }
+
+    public function setPrice(string $price): static
+    {
+        $this->price = $price;
+        return $this;
+    }
+
+    // Méthode utilitaire pour obtenir un slug unique pour chaque menu
+    public function getSlug(): string
+    {
+        return strtolower(str_replace([' ', 'é', 'è', 'à'], ['-', 'e', 'e', 'a'], $this->titre)) . '-' . $this->id;
     }
 }

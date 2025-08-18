@@ -1,4 +1,5 @@
 {% extends 'baseAdmin.html.twig' %}
+
 {% block body %}
 <h1>Modifier le Menu</h1>
 
@@ -11,6 +12,11 @@
     <div class="form-group">
         <label for="description">Description :</label>
         <textarea id="description" name="description" required>{{ menu.description }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="price">Prix :</label>
+        <input type="number" id="price" name="price" step="0.01" value="{{ menu.price ?? '' }}" required>
     </div>
     
     <div class="form-group">
@@ -25,16 +31,19 @@
         <small>Laissez vide pour conserver l'image actuelle</small>
     </div>
     
+    <div class="form-group">
+        <label for="type">Type :</label>
+        <select name="type" id="type" required>
+            {% for t in types %}
+                <option value="{{ t }}" {% if menu.type is defined and menu.type == t %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
     <div class="form-actions">
         <button type="submit" class="btn btn-success">Mettre à jour</button>
         <a href="{{ path('firebase_menu_index') }}" class="btn btn-secondary">Annuler</a>
     </div>
-
-     <select name="type" id="type" required>
-        {% for t in types %}
-            <option value="{{ t }}" {% if menu.type is defined and menu.type == t %}selected{% endif %}>{{ t }}</option>
-        {% endfor %}
-    </select>
 </form>
 
 <style>
@@ -46,7 +55,7 @@
     margin-bottom: 5px;
     font-weight: bold;
 }
-.form-group input, .form-group textarea {
+.form-group input, .form-group textarea, .form-group select {
     width: 100%;
     max-width: 400px;
     padding: 8px;

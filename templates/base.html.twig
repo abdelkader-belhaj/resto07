@@ -30,50 +30,314 @@
         {% endblock %}
     </head>
     
-
-
     <body class="index-page">
      <header id="header" class="header fixed-top">
+        
+        <div class="branding d-flex align-items-center">
+            <div class="container position-relative d-flex align-items-center justify-content-between">
+                
+                <!-- Logo à gauche -->
+                <a class="logo d-flex align-items-center">
+                    <!-- Uncomment the line below if you also wish to use an image logo -->
+                    <!-- <img src="assets/img/logo.png" alt=""> -->
+                    <h1 class="sitename">Délicieux</h1>
+                </a>
 
-    <div class="topbar d-flex align-items-center">
-      <div class="container d-flex justify-content-end justify-content-md-between">
-        <div class="contact-info d-flex align-items-center">
-          <i class="bi bi-phone d-flex align-items-center d-none d-lg-block"><span>+216 58069420</span></i>
-          <i class="bi bi-clock ms-4 d-none d-lg-flex align-items-center"><span>Mon-Sam: 11:00 AM - 23:00 PM</span></i>
+                <!-- Navigation avec auth intégrée -->
+                <nav id="navmenu" class="navmenu">
+                    <ul>
+                        <li><a href="#hero" class="active">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#menu">Menu</a></li>
+                        <li><a href="#specials">Specials</a></li>
+                        <li><a href="#events">Events</a></li>
+                        <li><a href="#chefs">Chefs</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="#book-a-table" class="cta-btn">Réserver une table</a></li>
+                        
+   {% if app.session.get('user') %}
+    <!-- Utilisateur connecté -->
+    <li class="nav-auth-section">
+        <div class="dropdown">
+            <button class="btn btn-auth dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle me-2"></i>
+                <span>nom : {{ app.session.get('user').nomComplete }}</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end auth-dropdown" aria-labelledby="userDropdown">
+                <li class="dropdown-header">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-badge me-2"></i>
+                        <div>
+                            <h6 class="mb-0">{{ app.session.get('user').nomComplete }}</h6>
+                            <small class="text-muted">{{ app.session.get('user').email }}</small>
+                        </div>
+                    </div>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                {% if app.session.get('user').type == 'client' %}
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            <i class="bi bi-person me-2"></i> Mon Profil
+                        </a>
+                    </li>
+                {% endif %}
+                <li>
+                    <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+                        <i class="bi bi-box-arrow-right me-2"></i> Déconnexion
+                    </a>
+                </li>
+            </ul>
         </div>
-        <a href="#book-a-table" class="cta-btn">Réserver une table</a>
-      </div>
-    </div><!-- End Top Bar -->
+    </li>
+    
+{% else %}
+    <!-- Utilisateur non connecté -->
+    <li class="nav-auth-section">
+        <div class="dropdown">
+            <button class="btn btn-auth dropdown-toggle d-flex align-items-center" type="button" id="authDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person me-2"></i>
+                <span>Mon Compte</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end auth-dropdown" aria-labelledby="authDropdown">
+                <li class="dropdown-header">
+                    <h6 class="mb-0">Accéder à votre compte</h6>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item" href="{{ path('app_login') }}">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Se connecter
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{{ path('app_register') }}">
+                        <i class="bi bi-person-plus me-2"></i> Créer un compte
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>
+{% endif %}
 
-    <div class="branding d-flex align-items-cente">
 
-      <div class="container position-relative d-flex align-items-center justify-content-between">
-        <a href="index.html" class="logo d-flex align-items-center">
-          <!-- Uncomment the line below if you also wish to use an image logo -->
-          <!-- <img src="assets/img/logo.png" alt=""> -->
-          <h1 class="sitename">Délicieux</h1>
-        </a>
+                        
+                    </ul>
+                    <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+                </nav>
 
-        <nav id="navmenu" class="navmenu">
-          <ul>
-            <li><a href="#hero" class="active">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#menu">Menu</a></li>
-            <li><a href="#specials">Specials</a></li>
-            <li><a href="#events">Events</a></li>
-            <li><a href="#chefs">Chefs</a></li>
-            <li><a href="#gallery">Gallery</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-        </nav>
+            </div>
+        </div>
+    </header>
 
-      </div>
+    <style>
+    /* Styles pour section auth unifiée */
+    .nav-auth-section,
+    .nav-user-section {
+        margin-left: 20px;
+        display: flex;
+        align-items: center;
+    }
 
-    </div>
+    /* Bouton d'authentification unifié */
+    .btn-auth {
+        background: transparent;
+        border: 1px solid rgba(44, 62, 80, 0.2);
+        border-radius: 25px;
+        padding: 8px 16px;
+        transition: all 0.3s ease;
+        color: #ff6b35;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+    }
 
-  </header>
-  <main class="main">
+    .btn-auth:hover {
+        background: rgba(255, 107, 53, 0.1);
+        border-color: #ff6b35;
+        color: #ff6b35;
+        transform: translateY(-1px);
+    }
+
+    .btn-auth:focus {
+        box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.2);
+    }
+
+    /* Dropdown d'authentification */
+    .auth-dropdown {
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        padding: 8px 0;
+        min-width: 200px;
+        margin-top: 5px;
+    }
+
+    .auth-dropdown .dropdown-header {
+        padding: 12px 16px;
+        background: rgba(248, 249, 250, 0.7);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .auth-dropdown .dropdown-header h6 {
+        margin-bottom: 0;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 14px;
+    }
+
+    .auth-dropdown .dropdown-item {
+        padding: 10px 16px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .auth-dropdown .dropdown-item:hover {
+        background: rgba(255, 107, 53, 0.1);
+        color: #ff6b35;
+    }
+
+    
+
+    /* Bouton profil dans navbar */
+    .btn-profile {
+        background: rgba(255, 107, 53, 0.1);
+        border: 1px solid rgba(255, 107, 53, 0.2);
+        border-radius: 25px;
+        padding: 8px 16px;
+        transition: all 0.3s ease;
+        color: #ff6b35;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .btn-profile:hover {
+        background: rgba(255, 107, 53, 0.15);
+        border-color: #ff6b35;
+        color: #ff6b35;
+        transform: translateY(-1px);
+    }
+
+    .profile-name {
+        max-width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+    }
+
+    /* Dropdown profil - style minimal */
+    .profile-dropdown {
+        border-radius: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        padding: 8px 0;
+        min-width: 220px;
+        margin-top: 5px;
+    }
+
+    .profile-dropdown .dropdown-header {
+        padding: 10px 16px;
+        background: rgba(248, 249, 250, 0.7);
+    }
+
+    .profile-dropdown .dropdown-header h6 {
+        margin-bottom: 2px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .profile-dropdown .dropdown-item {
+        padding: 8px 16px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+    }
+
+    .profile-dropdown .dropdown-item:hover {
+        background: rgba(255, 107, 53, 0.1);
+        color: #ff6b35;
+    }
+
+    .profile-dropdown .dropdown-divider {
+        margin: 4px 0;
+    }
+
+    /* Responsive pour navbar */
+    @media (max-width: 1199px) {
+        .nav-auth-section,
+        .nav-user-section {
+            margin-left: 15px;
+        }
+        
+        .btn-auth, .btn-profile {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+        
+        .profile-name {
+            max-width: 80px;
+        }
+    }
+
+    @media (max-width: 991px) {
+        .nav-auth-section,
+        .nav-user-section {
+            margin-left: 10px;
+        }
+        
+        .btn-auth, .btn-profile {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .btn-auth span, .profile-name {
+            display: none;
+        }
+        
+        .btn-auth i, .btn-profile i {
+            margin: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        /* Cache les boutons auth sur mobile - ils seront dans le menu mobile */
+        .nav-auth-section,
+        .nav-user-section {
+            display: none;
+        }
+    }
+
+    /* Amélioration du mobile toggle */
+    .mobile-nav-toggle {
+        color: #2c3e50;
+        font-size: 24px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .mobile-nav-toggle:hover {
+        color: #ff6b35;
+        transform: scale(1.1);
+    }
+
+    /* Séparateur visuel subtil */
+    .nav-auth-section::before {
+        content: '';
+        width: 1px;
+        height: 20px;
+        background: rgba(44, 62, 80, 0.15);
+        margin-right: 15px;
+        display: inline-block;
+    }
+    </style>
+
+    <main class="main">
 
     <!-- Hero Section -->
     <section id="hero" class="hero section dark-background">
@@ -84,10 +348,10 @@
           <img src="{{ asset('assets/img/hero-carousel/hero-carousel-1.jpg') }}" alt="">
           <div class="carousel-container">
             <h2><span>Délices</span> Resto</h2>
-            <p>Bienvenue sur Délices Resto, votre plateforme dédiée aux amoureux de la bonne cuisine. Découvrez une variété de plats savoureux, commandez en quelques clics et profitez d’une expérience culinaire unique, chez vous ou sur place.</p>
+            <p>Bienvenue sur Délices Resto, votre plateforme dédiée aux amoureux de la bonne cuisine. Découvrez une variété de plats savoureux, commandez en quelques clics et profitez d'une expérience culinaire unique, chez vous ou sur place.</p>
             <div>
-              <a href="#menu" class="btn-get-started">Our Menu</a>
-              <a href="#book-a-table" class="btn-get-started">Book a table</a>
+              <a href="#menu" class="btn-get-started">Notre menu</a>
+              <a href="#book-a-table" class="btn-get-started">À table !</a>
             </div>
           </div>
         </div><!-- End Carousel Item -->
@@ -96,10 +360,10 @@
           <img src="{{ asset('assets/img/hero-carousel/hero-carousel-2.jpg') }}" alt="">
           <div class="carousel-container">
             <h2>À vrai dire, nous assumons nos choix</h2>
-            <p>>Dans les moments libres, lorsque tout nous est permis, rien ne nous empêche de réaliser ce qui nous passionne le plus. Chaque plaisir mérite d’être vécu pleinement, et chaque difficulté peut être surmontée avec détermination.</p>
+            <p>>Dans les moments libres, lorsque tout nous est permis, rien ne nous empêche de réaliser ce qui nous passionne le plus. Chaque plaisir mérite d'être vécu pleinement, et chaque difficulté peut être surmontée avec détermination.</p>
             <div>
-              <a href="#menu" class="btn-get-started">Our Menu</a>
-              <a href="#book-a-table" class="btn-get-started">Book a table</a>
+              <a href="#menu" class="btn-get-started">Notre menu</a>
+              <a href="#book-a-table" class="btn-get-started">À table !</a>
             </div>
           </div>
         </div><!-- End Carousel Item -->
@@ -110,8 +374,8 @@
             <h2>Parfois, dans certaines circonstances</h2>
             <p>Il est des moments où la vie nous révèle ses vérités cachées. Nul ne cherche la douleur pour elle-même, mais parfois elle devient le chemin vers de grandes découvertes, portées par ceux qui suivent la voie de la passion et de la vérité.</p>
             <div>
-              <a href="#menu" class="btn-get-started">Our Menu</a>
-              <a href="#book-a-table" class="btn-get-started">Book a table</a>
+              <a href="#menu" class="btn-get-started">Notre menu</a>
+              <a href="#book-a-table" class="btn-get-started">À table !</a>
             </div>
           </div>
         </div><!-- End Carousel Item -->
@@ -125,7 +389,6 @@
         </a>
 
         <ol class="carousel-indicators"></ol>
-
 
       </div>
 
@@ -153,8 +416,8 @@
               <li><i class="bi bi-check2-all"></i> <span>Des plats créatifs et équilibrés, adaptés à toutes vos envies.</span></li>
             </ul>
             <p>
-              Que ce soit pour un dîner entre amis, un repas d’affaires ou une occasion spéciale, 
-              laissez-vous tenter par notre savoir-faire et profitez d’un moment d’exception.
+              Que ce soit pour un dîner entre amis, un repas d'affaires ou une occasion spéciale, 
+              laissez-vous tenter par notre savoir-faire et profitez d'un moment d'exception.
             </p>
           </div>
         </div>
@@ -212,71 +475,22 @@
 
 {% endblock %}
 
-
-
-
-
-
-   {% block bodyspec %}
+{% block bodyspec %}
 
 {% endblock %}
-
-
-
 
 {% block bodyparties %}
 
 {% endblock %}
-
-
-
-
-
-
-
-
 
 {% block bodyTable %}
 
 
 {% endblock %}
 
-
-
-
-
-
-
-
-
-
-   {% block bodyGallery %}
+{% block bodyGallery %}
 
    {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
-
-
-
-
-
-
-
-
-
 
    {% block bodyChefs %}
 
@@ -402,12 +616,13 @@
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <h2>Contact</h2>
-        <div><span>Check Our</span> <span class="description-title">Contact</span></div>
+        <div><span>Contactez-</span> <span class="description-title">Nous</span></div>
+        
       </div><!-- End Section Title -->
 
-      <div class="mb-5">
-        <iframe style="width: 100%; height: 400px;" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621" frameborder="0" allowfullscreen=""></iframe>
-      </div><!-- End Google Maps -->
+<div class="mb-5">
+  <iframe style="width: 100%; height: 400px;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5624.499798015644!2d10.857646262990746!3d36.57623285400199!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1302bbbb1dd2ee7b%3A0x72079df2784587b4!2sAgil%20Korba!5e0!3m2!1sfr!2stn!4v1752772144110!5m2!1sfr!2stn"  frameborder="0" allowfullscreen=""></iframe>
+</div><!-- End Google Maps -->
 
       <div class="container" data-aos="fade">
 
@@ -416,14 +631,14 @@
           <div class="col-lg-4">
 
             <div class="info">
-              <h3>Get in touch</h3>
-              <p>Et id eius voluptates atque nihil voluptatem enim in tempore minima sit ad mollitia commodi minus.</p>
+              <h3>Contactez-nous</h3>
+              <p>N'hésitez pas à nous contacter pour toute question ou demande. Nous sommes à votre écoute pour vous aider.</p>
 
               <div class="info-item d-flex">
                 <i class="bi bi-geo-alt flex-shrink-0"></i>
                 <div>
-                  <h4>Location:</h4>
-                  <p>A108 Adam Street, New York, NY 535022</p>
+                  <h4>Localisation:</h4>
+                  <p>Nabeul,Korba  8070 </p>
                 </div>
               </div><!-- End Info Item -->
 
@@ -431,15 +646,15 @@
                 <i class="bi bi-envelope flex-shrink-0"></i>
                 <div>
                   <h4>Email:</h4>
-                  <p>info@example.com</p>
+                  <p>abdelkader.belhaj@esprit.tn</p>
                 </div>
               </div><!-- End Info Item -->
 
               <div class="info-item d-flex">
                 <i class="bi bi-phone flex-shrink-0"></i>
                 <div>
-                  <h4>Call:</h4>
-                  <p>+1 5589 55488 55</p>
+                  <h4>Appelez-nous :</h4>
+                  <p>+216 58069420</p>
                 </div>
               </div><!-- End Info Item -->
 
@@ -447,13 +662,74 @@
 
           </div>
 
-         
 
 
+<script>
+function checkAuthBeforeSubmit(targetUrl, formId = null) {
+    // Vérifie si l'utilisateur est connecté
+    {% if app.session.get('user') %}
+        // Si connecté, soumet le formulaire ou redirige
+        if (formId) {
+            document.getElementById(formId).submit();
+        } else {
+            window.location.href = targetUrl;
+        }
+    {% else %}
+        // Si non connecté, affiche l'alerte
+        showLoginAlert(targetUrl);
+    {% endif %}
+}
 
-
-
-
+function showLoginAlert(targetUrl) {
+    const alertBox = document.createElement('div');
+    alertBox.style.position = 'fixed';
+    alertBox.style.top = '0';
+    alertBox.style.left = '0';
+    alertBox.style.width = '100%';
+    alertBox.style.height = '100%';
+    alertBox.style.backgroundColor = 'rgba(0,0,0,0.5)';
+    alertBox.style.display = 'flex';
+    alertBox.style.justifyContent = 'center';
+    alertBox.style.alignItems = 'center';
+    alertBox.style.zIndex = '9999';
+    
+    // Création d'un élément script pour stocker la targetUrl
+    const urlScript = document.createElement('script');
+    urlScript.textContent = `var loginRedirectUrl = '${targetUrl}';`;
+    
+    alertBox.innerHTML = `
+        <div style="background: white; padding: 30px; border-radius: 10px; text-align: center; max-width: 400px;">
+            <h4 style="color: #ff6b35; margin-bottom: 20px;">Connexion requise</h4>
+            <p style="margin-bottom: 25px;">Vous devez vous connecter avant de pouvoir effectuer cette action.</p>
+            <div>
+                <button id="loginAlertBtn" 
+                        style="background: #ff6b35; color: white; border: none; padding: 10px 20px; 
+                               border-radius: 5px; font-weight: bold; cursor: pointer; margin-right: 10px;">
+                    Se connecter
+                </button>
+                <button id="cancelAlertBtn" 
+                        style="background: #6c757d; color: white; border: none; padding: 10px 20px; 
+                               border-radius: 5px; cursor: pointer;">
+                    Annuler
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(alertBox);
+    document.body.appendChild(urlScript);
+    
+    // Gestion des événements avec addEventListener
+    document.getElementById('loginAlertBtn').addEventListener('click', function() {
+        window.location.href = '{{ path('app_login') }}?redirect=' + encodeURIComponent(loginRedirectUrl);
+    });
+    
+    document.getElementById('cancelAlertBtn').addEventListener('click', function() {
+        alertBox.remove();
+        urlScript.remove();
+    });
+}
+</script>
 
 
 
@@ -474,69 +750,69 @@
     </section><!-- /Contact Section -->
 
   </main>
+<footer id="footer" class="footer dark-background">
 
-  <footer id="footer" class="footer dark-background">
-
-    <div class="container">
-      <div class="row gy-3">
-        <div class="col-lg-3 col-md-6 d-flex">
-          <i class="bi bi-geo-alt icon"></i>
-          <div class="address">
-            <h4>Address</h4>
-            <p>A108 Adam Street</p>
-            <p>New York, NY 535022</p>
-            <p></p>
-          </div>
-
+  <div class="container">
+    <div class="row gy-3">
+      <div class="col-lg-3 col-md-6 d-flex">
+        <i class="bi bi-geo-alt icon"></i>
+        <div class="address">
+          <h4>Adresse</h4>
+          <p>108 rue Adam</p>
+          <p>New York, NY 535022</p>
+          <p></p>
         </div>
-
-        <div class="col-lg-3 col-md-6 d-flex">
-          <i class="bi bi-telephone icon"></i>
-          <div>
-            <h4>Contact</h4>
-            <p>
-              <strong>Phone:</strong> <span>+1 5589 55488 55</span><br>
-              <strong>Email:</strong> <span>info@example.com</span><br>
-            </p>
-          </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6 d-flex">
-          <i class="bi bi-clock icon"></i>
-          <div>
-            <h4>Opening Hours</h4>
-            <p>
-              <strong>Mon-Sat:</strong> <span>11AM - 23PM</span><br>
-              <strong>Sunday</strong>: <span>Closed</span>
-            </p>
-          </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-          <h4>Follow Us</h4>
-          <div class="social-links d-flex">
-            <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
-            <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
-          </div>
-        </div>
-
       </div>
-    </div>
 
-    <div class="container copyright text-center mt-4">
-      <p>© <span>Copyright</span> <strong class="px-1 sitename">Delicious</strong> <span>All Rights Reserved</span></p>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you've purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      <div class="col-lg-3 col-md-6 d-flex">
+        <i class="bi bi-telephone icon"></i>
+        <div>
+          <h4>Contact</h4>
+          <p>
+            <strong>Téléphone :</strong> <span>+1 5589 55488 55</span><br>
+            <strong>Email :</strong> <span>info@example.com</span><br>
+          </p>
+        </div>
       </div>
-    </div>
 
-  </footer>
+      <div class="col-lg-3 col-md-6 d-flex">
+        <i class="bi bi-clock icon"></i>
+        <div>
+          <h4>Horaires d’ouverture</h4>
+          <p> 
+            <strong>Ouvert tous </strong> <span>les jours</span><br>
+            <span>de 07h00 à </span> <span>02h00</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <h4>Suivez-nous</h4>
+        <div class="social-links d-flex">
+          <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="container copyright text-center mt-4">
+    <div class="credits">
+      <!-- Tous les liens dans le pied de page doivent rester intacts. -->
+      <!-- Vous pouvez supprimer les liens uniquement si vous avez acheté la version pro. -->
+      <!-- Informations sur la licence : https://bootstrapmade.com/license/ -->
+      <!-- Achetez la version pro avec formulaire de contact PHP/AJAX fonctionnel : [buy-url] -->
+        <p>Développé par  - <a href="mailto:ton.email@example.com">abdelkader.belhaj@esprit.tn</a></p>
+
+    </div>
+  </div>
+
+</footer>
+
+
 
   <!-- Scroll Top -->
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
@@ -564,4 +840,6 @@
 
   
     </body>
+
+    
 </html>

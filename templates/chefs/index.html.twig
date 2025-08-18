@@ -4,9 +4,11 @@
 
 {% block body %}
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="mb-0">Gestion des Chefs</h1>
-        <a href="{{ path('chefs_create') }}" class="btn btn-success">Ajouter un chef</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gestion des Chefs</h2>
+        <a href="{{ path('chefs_create') }}" class="btn btn-primary d-flex align-items-center">
+            <i class="fas fa-plus me-1"></i>Ajouter un chef
+        </a>
     </div>
     <div class="card shadow-sm">
         <div class="card-body">
@@ -32,14 +34,25 @@
                             <td class="fw-bold">{{ chef.nom }}</td>
                             <td>{{ chef.titre }}</td>
                             <td>
-                                <a href="{{ path('chefs_edit', {'key': key}) }}" class="btn btn-primary btn-sm me-2">
-                                    <i class="bi bi-pencil"></i> Modifier
-                                </a>
-                                <form method="post" action="{{ path('chefs_delete', {'key': key}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce chef ?');">
-                                    <button type="submit" class="btn btn-danger btn-sm">
-                                        <i class="bi bi-trash"></i> Supprimer
-                                    </button>
-                                </form>
+                                <div class="d-flex justify-content-start gap-2">
+                                    <a href="{{ path('chefs_edit', {'key': key}) }}" 
+                                       class="btn btn-warning btn-xs px-2 py-1"
+                                       title="Modifier"
+                                       style="font-size: 0.75rem;">
+                                        <i class="fas fa-edit me-1"></i>Modifier
+                                    </a>
+                                    <form method="post" 
+                                          action="{{ path('chefs_delete', {'key': key}) }}" 
+                                          style="display:inline;" 
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce chef ?');">
+                                        <button type="submit" 
+                                                class="btn btn-danger btn-xs px-2 py-1"
+                                                title="Supprimer"
+                                                style="font-size: 0.75rem;">
+                                            <i class="fas fa-trash me-1"></i>Supprimer
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     {% else %}

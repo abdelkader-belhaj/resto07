@@ -10,22 +10,23 @@
     "cloudinary/cloudinary_php": "^3.1.1",
     "doctrine/dbal": "^3.10",
     "doctrine/doctrine-bundle": "^2.15",
+    "doctrine/doctrine-fixtures-bundle": "^4.1",
     "doctrine/doctrine-migrations-bundle": "^3.4.2",
     "doctrine/orm": "^3.5",
     "kreait/firebase-php": "^5.26.5",
+    "nelmio/cors-bundle": "^2.5",
     "symfony/asset": "7.3.*",
     "symfony/console": "7.3.*",
     "symfony/dotenv": "7.3.*",
     "symfony/flex": "^2.8.1",
     "symfony/form": "7.3.*",
     "symfony/framework-bundle": "7.3.*",
+    "symfony/maker-bundle": "^1.64",
     "symfony/runtime": "7.3.*",
     "symfony/security-csrf": "7.3.*",
     "symfony/twig-bundle": "7.3.*",
     "symfony/validator": "7.3.*",
-    "symfony/yaml": "7.3.*",
-      "doctrine/doctrine-fixtures-bundle": "^4.1",
-    "symfony/maker-bundle": "^1.64"
+    "symfony/yaml": "7.3.*"
   },
   "config": {
     "allow-plugins": {
@@ -66,8 +67,5 @@
       "allow-contrib": false,
       "require": "7.3.*"
     }
-  },
-  "require-dev": {
-  
   }
 }

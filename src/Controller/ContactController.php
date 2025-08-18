@@ -53,6 +53,8 @@ class ContactController extends AbstractController
         return $this->render('contacts/show.html.twig', ['contact' => $contact, 'key' => $key]);
     }
 
+
+    
     #[Route('/contacts/{key}/edit', name: 'contact_edit')]
     public function edit(Request $request, string $key): Response
     {
@@ -79,5 +81,25 @@ class ContactController extends AbstractController
     {
         $this->firebase->deleteContact($key);
         return $this->redirectToRoute('contact_index');
+    }
+
+    #[Route('/contact/front/submit', name: 'front_contact_submit', methods: ['POST'])]
+    public function submitFrontContact(Request $request): Response
+    {
+        if ($request->isMethod('POST')) {
+            $data = [
+                'name' => $request->request->get('name'),
+                'email' => $request->request->get('email'),
+                'subject' => $request->request->get('subject'),
+                'message' => $request->request->get('message'),
+                'createdAt' => (new \DateTime())->format('Y-m-d H:i:s'),
+            ];
+
+            $this->firebase->createContact($data);
+            $this->addFlash('success', 'Votre message a été envoyé avec succès!');
+            return $this->redirectToRoute('front_index', ['_fragment' => 'contact']);
+        }
+
+        return $this->redirectToRoute('front_index', ['_fragment' => 'contact']);
     }
 }

@@ -1,32 +1,18 @@
 <?php
 
 namespace App\Service;
+
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Database;
-use Kreait\Firebase\ServiceAccount;
 
 class FirebaseService
 {
     private Database $database;
 
-    public function __construct()
+    public function __construct(string $credentialsPath, string $databaseUrl)
     {
-        $credentialsJson = getenv('FIREBASE_CREDENTIALS');
-        $databaseUrl = getenv('FIREBASE_DATABASE_URL');
-
-        if (!$credentialsJson || !$databaseUrl) {
-            throw new \RuntimeException('FIREBASE_CREDENTIALS or FIREBASE_DATABASE_URL is not set.');
-        }
-
-        // Convertir le JSON en tableau PHP
-        $credentialsArray = json_decode($credentialsJson, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \RuntimeException('Invalid JSON in FIREBASE_CREDENTIALS: ' . json_last_error_msg());
-        }
-
-        $factory = (new Factory())
-            ->withServiceAccount(ServiceAccount::fromValue($credentialsArray))
+        $factory = (new Factory)
+            ->withServiceAccount($credentialsPath)
             ->withDatabaseUri($databaseUrl);
 
         $this->database = $factory->createDatabase();
@@ -36,10 +22,10 @@ class FirebaseService
     {
         return $this->database;
     }
+
     // --------------------------
     // 🎯 MENUS
     // --------------------------
-
     public function createMenu(array $data): void
     {
         $this->database->getReference('menus')->push($data);
@@ -65,15 +51,9 @@ class FirebaseService
         $this->database->getReference("menus/{$key}")->remove();
     }
 
-    public function getMenus(): array
-    {
-        return $this->database->getReference('menus')->getValue() ?? [];
-    }
-
     // --------------------------
     // 🆕 SPECIALS
     // --------------------------
-
     public function createSpecial(array $data): void
     {
         $this->database->getReference('specials')->push($data);
@@ -99,41 +79,35 @@ class FirebaseService
         $this->database->getReference("specials/{$key}")->remove();
     }
 
+    // --------------------------
+    // 🍽️ TABLES
+    // --------------------------
+    public function createTable(array $data): void
+    {
+        $this->database->getReference('tables')->push($data);
+    }
 
+    public function getAllTables(): array
+    {
+        return $this->database->getReference('tables')->getValue() ?? [];
+    }
+
+    public function getTable(string $key): ?array
+    {
+        return $this->database->getReference("tables/{$key}")->getValue();
+    }
+
+    public function updateTable(string $key, array $data): void
+    {
+        $this->database->getReference("tables/{$key}")->update($data);
+    }
+
+    public function deleteTable(string $key): void
+    {
+        $this->database->getReference("tables/{$key}")->remove();
+    }
 
     // --------------------------
-// 🍽️ TABLES
-// --------------------------
-
-public function createTable(array $data): void
-{
-    $this->database->getReference('tables')->push($data);
-}
-
-public function getAllTables(): array
-{
-    return $this->database->getReference('tables')->getValue() ?? [];
-}
-
-public function getTable(string $key): ?array
-{
-    return $this->database->getReference("tables/{$key}")->getValue();
-}
-
-public function updateTable(string $key, array $data): void
-{
-    $this->database->getReference("tables/{$key}")->update($data);
-}
-
-public function deleteTable(string $key): void
-{
-    $this->database->getReference("tables/{$key}")->remove();
-}
-
-
-
-
- // --------------------------
     // 👨‍🍳 CHEFS
     // --------------------------
     public function createChef(array $data): void
@@ -189,7 +163,6 @@ public function deleteTable(string $key): void
         $this->database->getReference("contacts/{$key}")->remove();
     }
 
-    
     // --------------------------
     // 🖼️ GALLERY
     // --------------------------
@@ -218,46 +191,114 @@ public function deleteTable(string $key): void
         $this->database->getReference("galleries/{$key}")->remove();
     }
 
+    // --------------------------
+    // 🎉 PARTTIES
+    // --------------------------
+    public function createParttie(array $data): void
+    {
+        $this->database->getReference('partties')->push($data);
+    }
 
+    public function getAllPartties(): array
+    {
+        return $this->database->getReference('partties')->getValue() ?? [];
+    }
 
+    public function getParttie(string $key): ?array
+    {
+        return $this->database->getReference("partties/{$key}")->getValue();
+    }
 
+    public function updateParttie(string $key, array $data): void
+    {
+        $this->database->getReference("partties/{$key}")->update($data);
+    }
 
-// --------------------------
-// 🎉 PARTTIES
-// --------------------------
-public function createParttie(array $data): void
-{
-    $this->database->getReference('partties')->push($data);
+    public function deleteParttie(string $key): void
+    {
+        $this->database->getReference("partties/{$key}")->remove();
+    }
+
+    // --------------------------
+    // 🛒 ORDERS
+    // --------------------------
+    public function createOrder(array $data): void
+    {
+        $this->database->getReference('orders')->push($data);
+    }
+
+    public function getAllOrders(): array
+    {
+        return $this->database->getReference('orders')->getValue() ?? [];
+    }
+
+    public function getOrder(string $key): ?array
+    {
+        return $this->database->getReference("orders/{$key}")->getValue();
+    }
+
+    public function updateOrder(string $key, array $data): void
+    {
+        $this->database->getReference("orders/{$key}")->update($data);
+    }
+
+    public function deleteOrder(string $key): void
+    {
+        $this->database->getReference("orders/{$key}")->remove();
+    }
+
+    // --------------------------
+    // 👤 USERS
+    // --------------------------
+    public function createUser(array $data): void
+    {
+        $this->database->getReference('users')->push($data);
+    }
+
+    public function getAllUsers(): array
+    {
+        return $this->database->getReference('users')->getValue() ?? [];
+    }
+
+    public function getUser(string $key): ?array
+    {
+        return $this->database->getReference("users/{$key}")->getValue();
+    }
+
+    public function updateUser(string $key, array $data): void
+    {
+        $this->database->getReference("users/{$key}")->update($data);
+    }
+
+    public function deleteUser(string $key): void
+    {
+        $this->database->getReference("users/{$key}")->remove();
+    }
+
+    public function getUserByEmail(string $email): ?array
+    {
+        $users = $this->getAllUsers();
+        foreach ($users as $key => $user) {
+            if ($user['email'] === $email) {
+                return ['key' => $key] + $user;
+            }
+        }
+        return null;
+    }
+
+    public function getAllAdmins(): array
+    {
+        $users = $this->getAllUsers();
+        return array_filter($users, function($user) {
+            return isset($user['type']) && $user['type'] === 'admin';
+        });
+    }
+
+    public function getAllClients(): array
+    {
+        $users = $this->getAllUsers();
+        return array_filter($users, function($user) {
+            return !isset($user['type']) || $user['type'] === 'client';
+        });
+    }
 }
-
-public function getAllPartties(): array
-{
-    return $this->database->getReference('partties')->getValue() ?? [];
-}
-
-public function getParttie(string $key): ?array
-{
-    return $this->database->getReference("partties/{$key}")->getValue();
-}
-
-public function updateParttie(string $key, array $data): void
-{
-    $this->database->getReference("partties/{$key}")->update($data);
-}
-
-public function deleteParttie(string $key): void
-{
-    $this->database->getReference("partties/{$key}")->remove();
-}
-
-
-
-
-
-   
-}
-
-
-
-
-

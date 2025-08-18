@@ -26,15 +26,7 @@
             <a href="{{ path('special_new') }}" class="btn btn-primary me-2 d-flex align-items-center">
                 <i class="fas fa-plus me-1"></i> <span>Créer un special</span>
             </a>
-            <button class="btn btn-outline-secondary d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="min-width: 44px;">
-                <i class="fas fa-bars"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end mt-2">
-                <li><a class="dropdown-item" href="{{ path('chefs_list') }}"><i class="fas fa-user-tie me-2"></i>Chefs</a></li>
-                <li><a class="dropdown-item" href="{{ path('contact_index') }}"><i class="fas fa-envelope me-2"></i>Contacts</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" ><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a></li>
-            </ul>
+           
         </div>
     </div>
 
@@ -80,23 +72,26 @@
                                 <td class="align-middle text-center">
                                     <div class="d-flex justify-content-center gap-2">
                                         <a href="{{ path('special_show', {'key': key}) }}"
-                                           class="btn btn-info btn-sm d-flex align-items-center"
-                                           title="Afficher">
-                                            <i class="fas fa-eye me-1"></i> <span>Voir</span>
+                                           class="btn btn-info btn-xs px-2 py-1"
+                                           title="Afficher"
+                                           style="font-size: 0.75rem;">
+                                            <i class="fas fa-eye me-1"></i>Voir
                                         </a>
                                         <a href="{{ path('special_edit', {'key': key}) }}"
-                                           class="btn btn-warning btn-sm d-flex align-items-center"
-                                           title="Modifier">
-                                            <i class="fas fa-edit me-1"></i> <span>Modifier</span>
+                                           class="btn btn-warning btn-xs px-2 py-1"
+                                           title="Modifier"
+                                           style="font-size: 0.75rem;">
+                                            <i class="fas fa-edit me-1"></i>Modifier
                                         </a>
                                         <form method="POST"
                                               action="{{ path('special_delete', {'key': key}) }}"
                                               style="display: inline;"
                                               onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce special ?');">
                                             <button type="submit"
-                                                    class="btn btn-danger btn-sm d-flex align-items-center"
-                                                    title="Supprimer">
-                                                <i class="fas fa-trash me-1"></i> <span>Supprimer</span>
+                                                    class="btn btn-danger btn-xs px-2 py-1"
+                                                    title="Supprimer"
+                                                    style="font-size: 0.75rem;">
+                                                <i class="fas fa-trash me-1"></i>Supprimer
                                             </button>
                                         </form>
                                     </div>

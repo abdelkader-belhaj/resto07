@@ -94,4 +94,39 @@ class TableFirebaseController extends AbstractController
         $this->addFlash('success', 'Réservation supprimée avec succès.');
         return $this->redirectToRoute('firebase_table_index');
     }
+
+    #[Route('/{tableId}/status', name: 'admin_update_table_status', methods: ['POST'])]
+    public function updateStatus(Request $request, string $tableId): Response
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            if (!isset($data['status'])) {
+                throw new \InvalidArgumentException('Le statut est requis');
+            }
+
+            // Vérification du token CSRF
+            if (!$this->isCsrfTokenValid('update-table-status', $request->headers->get('X-CSRF-TOKEN'))) {
+                throw new \InvalidArgumentException('Token CSRF invalide');
+            }
+
+            $table = $this->firebase->getTable($tableId);
+            if (!$table) {
+                throw new \InvalidArgumentException('Table non trouvée');
+            }
+
+            // Mise à jour du statut
+            $table['status'] = $data['status'];
+            
+            // Si on passe à disponible ou maintenance, on supprime les informations de réservation
+            if ($data['status'] === 'available' || $data['status'] === 'maintenance') {
+                unset($table['reservation']);
+            }
+
+            $this->firebase->updateTable($tableId, $table);
+
+            return $this->json(['message' => 'Statut mis à jour avec succès']);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
 }
